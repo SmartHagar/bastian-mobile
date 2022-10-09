@@ -112,39 +112,47 @@ const Dashboard = () => {
       <View style={styles.container}>
         <DashboarContext.Provider value={{transaksi}}>
           <View>
-            <View>
-              <Text
-                style={{
-                  color: colors.dark,
-                  textAlign: 'center',
-                  fontFamily: 'Poppins-Regular',
-                }}>
-                Silahkan memilih Tahun untuk melihat grafik pemasukan
-              </Text>
-              <View style={{alignItems: 'center'}}>
-                <YearSelect pilihTahun={pilihTahunPemasukan} isReset={false} />
+            {/* Grafik Pemasukan */}
+            {pemasukan && (
+              <View>
+                <Text
+                  style={{
+                    color: colors.dark,
+                    textAlign: 'center',
+                    fontFamily: 'Poppins-Regular',
+                  }}>
+                  Silahkan memilih Tahun untuk melihat grafik pemasukan
+                </Text>
+                <View style={{alignItems: 'center'}}>
+                  <YearSelect
+                    pilihTahun={pilihTahunPemasukan}
+                    isReset={false}
+                  />
+                </View>
+                {!isLoading && grafikPemasukan()}
               </View>
-              {!isLoading && grafikPemasukan()}
-            </View>
+            )}
             {/* Grafik Pengeluaran */}
-            <View>
-              <Text
-                style={{
-                  color: colors.dark,
-                  textAlign: 'center',
-                  fontFamily: 'Poppins-Regular',
-                }}>
-                Silahkan memilih Tahun untuk melihat grafik pengeluaran
-              </Text>
-              <View style={{alignItems: 'center'}}>
-                <YearSelect
-                  pilihTahun={pilihTahunPengeluaran}
-                  isReset={false}
-                />
+            {pengeluaran && (
+              <View>
+                <Text
+                  style={{
+                    color: colors.dark,
+                    textAlign: 'center',
+                    fontFamily: 'Poppins-Regular',
+                  }}>
+                  Silahkan memilih Tahun untuk melihat grafik pengeluaran
+                </Text>
+                <View style={{alignItems: 'center'}}>
+                  <YearSelect
+                    pilihTahun={pilihTahunPengeluaran}
+                    isReset={false}
+                  />
+                </View>
+                {!isLoading && grafikPengeluaran()}
+                {/* */}
               </View>
-              {!isLoading && grafikPengeluaran()}
-              {/* */}
-            </View>
+            )}
           </View>
         </DashboarContext.Provider>
       </View>

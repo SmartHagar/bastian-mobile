@@ -39,6 +39,7 @@ const Form = ({
   const [showPicker, setShowPicker] = useState(false);
   const [itemId, setItemId] = useState('');
   const [jumlah, setJumlah] = useState('');
+  const [ket, setKet] = useState('');
   // pesan toast
   const [pesanError, setPesanError] = useState('');
   // hidden form
@@ -65,6 +66,7 @@ const Form = ({
       setJumlah(`${dataEdit.jumlah}`);
       setItemId(dataEdit.item_id);
       setDate(new Date(dataEdit.tgl_transaksi));
+      setKet(dataEdit.ket);
     }
   }, [dataEdit]);
 
@@ -91,10 +93,12 @@ const Form = ({
       jenis: nameForm,
       tgl_transaksi: moment(date).format('YYYY-MM-DD'),
       jumlah: parseInt(jumlah),
+      ket,
     };
     // return console.log("item", item);
     dtSimpan(item);
     setJumlah('');
+    setKet('');
   };
   return (
     <View>
@@ -185,6 +189,16 @@ const Form = ({
                 dropdownStyle={styles.dropdown4DropdownStyle}
                 rowStyle={styles.dropdown4RowStyle}
                 rowTextStyle={styles.dropdown4RowTxtStyle}
+              />
+            </View>
+            {/* keterangan */}
+            <View style={styles.containerInput}>
+              <Text style={styles.inputLabel}>Keterangan</Text>
+              <TextInput
+                style={styles.inputText}
+                value={ket}
+                onChangeText={setKet}
+                placeholder="Masukan keterangan"
               />
             </View>
             {/* Jumlah */}

@@ -52,13 +52,14 @@ const Login = () => {
   }, [navigation]);
 
   const handleLogin = async () => {
+    setLoading(true);
     const row = {
       email,
       password,
     };
     const cek = await setLogin(row);
 
-    console.log(cek);
+    // console.log(cek);
 
     if (cek.error) {
       setPesanError(cek.error.message);
@@ -70,6 +71,7 @@ const Login = () => {
       setPesanError('');
       fetchData();
     }
+    setLoading(false);
   };
 
   if (loading) {
@@ -105,6 +107,7 @@ const Login = () => {
               placeholder="Email"
               placeholderTextColor="#003f5c"
               autoCapitalize="none"
+              value={email}
               onChangeText={email => setEmail(email)}
             />
           </View>
@@ -115,6 +118,7 @@ const Login = () => {
               placeholder="Password"
               placeholderTextColor="#003f5c"
               secureTextEntry={true}
+              value={password}
               onChangeText={password => setPassword(password)}
             />
           </View>

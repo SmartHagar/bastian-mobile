@@ -2,9 +2,9 @@
 
 import axios from 'axios';
 
-// const BASE_URL = 'http://192.168.90.199:8000';
+const BASE_URL = 'http://192.168.90.199:8000';
 // const BASE_URL = 'http://192.168.21.9:8000';
-const BASE_URL = 'https://bastian.tafstuogp.my.id';
+// const BASE_URL = 'https://bastian.tafstuogp.my.id';
 const url_auth = `${BASE_URL}/auth`;
 const url_api = `${BASE_URL}/api`;
 const url_crud = `${BASE_URL}/crud`;

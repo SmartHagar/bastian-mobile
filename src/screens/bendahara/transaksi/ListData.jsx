@@ -78,6 +78,16 @@ const ListData = ({
                   }}>
                   {item.item.nama}
                 </Text>
+                {console.log(item)}
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: '500',
+                    width: winWidth - 140,
+                    color: colors.dark,
+                  }}>
+                  {item.ket}
+                </Text>
                 <Text style={{fontSize: 14, opacity: 0.6, color: colors.dark}}>
                   {formatDate(item.tgl_transaksi)}
                 </Text>
