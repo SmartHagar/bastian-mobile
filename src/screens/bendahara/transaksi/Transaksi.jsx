@@ -61,7 +61,7 @@ const Transaksi = ({route}) => {
   // filter data by bulan
   const pilihBulan = async psBulan => {
     setBulan(psBulan);
-    console.log(psBulan, tahun);
+    // console.log(psBulan, tahun);
     setLoading(false);
     await setTransaksi(nama, psBulan, tahun);
     setLoading(true);
@@ -69,7 +69,7 @@ const Transaksi = ({route}) => {
   // filter data by tahun
   const pilihTahun = async psTahun => {
     setTahun(psTahun);
-    console.log(bulan, psTahun);
+    // console.log(bulan, psTahun);
     setLoading(false);
     await setTransaksi(nama, bulan, psTahun);
     setLoading(true);
@@ -96,7 +96,6 @@ const Transaksi = ({route}) => {
 
   // show toast
   const setPesanSuccess = pesan => {
-    console.log('test');
     Toast.show({
       type: 'success',
       text1: `${pesan} 👋`,

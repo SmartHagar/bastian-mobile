@@ -11,6 +11,7 @@ import {
 import React from 'react';
 import colors from '../../../styles/colors';
 import {Icon} from '@rneui/themed';
+import TextComp from '../../../components/form/TextComp';
 
 const ListData = ({arrData, handleHapus, handleEdit}) => {
   // dimensions
@@ -34,43 +35,37 @@ const ListData = ({arrData, handleHapus, handleEdit}) => {
               borderRadius: 16,
               justifyContent: 'space-between',
             }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <Text
+            <View className="flex-1 flex-row justify-between">
+              <View
                 style={{
-                  fontSize: 16,
-                  width: winWidth - 115,
-                  color: colors.dark,
+                  flexDirection: 'row',
+                  alignItems: 'center',
                 }}>
-                {item.nama}
-              </Text>
-            </View>
-            <View
-              style={{
-                flex: 2,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                padding: 13,
-              }}>
-              <TouchableOpacity onPress={() => handleEdit(item)}>
-                <Icon
-                  name="pencil"
-                  type="evilicon"
-                  size={24}
-                  color={colors.yellow}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleHapus(item.id)}>
-                <Icon
-                  name="trash"
-                  type="evilicon"
-                  size={24}
-                  color={colors.pink}
-                />
-              </TouchableOpacity>
+                <TextComp>{item.nama}</TextComp>
+                <TextComp className="ml-2">({item.kode})</TextComp>
+              </View>
+              <View className="flex-row">
+                <View>
+                  <TouchableOpacity onPress={() => handleEdit(item)}>
+                    <Icon
+                      name="pencil"
+                      type="evilicon"
+                      size={24}
+                      color={colors.yellow}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <View>
+                  <TouchableOpacity onPress={() => handleHapus(item.id)}>
+                    <Icon
+                      name="trash"
+                      type="evilicon"
+                      size={24}
+                      color={colors.pink}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
           </View>
         );

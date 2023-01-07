@@ -32,16 +32,14 @@ const useItem = create(
         };
       }
     },
-    addItems: async nama => {
+    addItems: async items => {
       // const getToken = JSON.parse(localStorage.getItem("token"));
       try {
         const res = await crud({
           method: 'post',
           url: `/item`,
           // headers: { Authorization: `Bearer ${getToken}` },
-          data: {
-            nama,
-          },
+          data: items,
         });
         set(state => ({
           arrData: [res.data.data, ...state.arrData],

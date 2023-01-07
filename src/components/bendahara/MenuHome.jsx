@@ -44,7 +44,7 @@ const MenuHome = () => {
       data={menuCard}
       keyExtractor={(item, index) => index.toString()}
       showsHorizontalScrollIndicator={false}
-      ItemSeparatorComponent={() => <ItemSeparator width={15} />}
+      ItemSeparatorComponent={() => <ItemSeparator width={10} />}
       ListHeaderComponent={() => <ItemSeparator width={15} />}
       ListFooterComponent={() => <ItemSeparator width={15} />}
       renderItem={({item}) => (
@@ -70,7 +70,7 @@ export default MenuHome;
 const styles = StyleSheet.create({
   container: {
     height: 50,
-    width: winHeight / 4,
+    width: winWidth / 2.3,
     borderRadius: 6,
     marginVertical: 6,
     alignItems: 'center',

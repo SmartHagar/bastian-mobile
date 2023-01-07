@@ -1,56 +1,77 @@
 /** @format */
 
-import {Dimensions, StyleSheet, Text, TextInput, View} from 'react-native';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {Button, Icon, Overlay} from '@rneui/themed';
+import {Overlay} from '@rneui/themed';
 import colors from '../../../styles/colors';
 import KeyboardAvoidingComp from '../../../components/KeyboardAvoidingComp';
 
 import useItem from '../../../stores/Items';
+import InputComp from '../../../components/form/InputComp';
+import ButtonComp from '../../../components/form/ButtonComp';
+import {useForm} from 'react-hook-form';
 
-const Form = ({open, setOpen, nameForm, setPesanSuccess, dataEdit}) => {
+const Form = ({open, setOpen, nameForm, setPesanToast, dataEdit = false}) => {
   const winWidth = Dimensions.get('window').width;
   const winHeight = Dimensions.get('window').height;
 
   // input
-  const [nama, setNama] = useState('');
   const {addItems, updateItems} = useItem();
-  // pesan
-  const [pesanError, setPesanError] = useState('');
 
   // event tampil
   const [visible, setVisible] = useState(open);
   const toggleOverlay = () => {
     setVisible(false);
     setOpen(false);
+    setPesanToast(false);
   };
 
+  // hook-form
+  const {control, handleSubmit, watch, reset} = useForm({
+    defaultValues: '',
+  });
+  // mereset form
+  const resetInput = () => {
+    reset(
+      {
+        nama: '',
+        kode: '',
+      },
+      {
+        keepErrors: true,
+        keepDirty: true,
+      },
+    );
+  };
+
+  // ketika tombol edit ditekan
   useEffect(() => {
-    if (dataEdit.nama) {
-      setNama(dataEdit.nama);
-    }
-  }, [dataEdit]);
+    dataEdit &&
+      reset(
+        {
+          nama: dataEdit.nama,
+          kode: dataEdit.kode,
+        },
+        {
+          keepErrors: true,
+          keepDirty: true,
+        },
+      );
 
-  const validation = () => {
-    if (nama.length === 0) {
-      setPesanError('Nama tidak boleh kosong');
-      return false;
+    !dataEdit && resetInput();
+    setPesanToast(false);
+  }, [dataEdit]);
+  // ketika tombol simpan ditekan
+  const handelSimpan = async data => {
+    console.log(data);
+    let res;
+    if (dataEdit) {
+      res = await updateItems(dataEdit.id, data);
+    } else {
+      res = await addItems(data);
     }
-    // jika berhasil
-    return true;
-  };
-  const handelSimpan = () => {
-    if (!validation()) {
-      return 0;
-    }
-    if (dataEdit.nama) {
-      updateItems(dataEdit.id, {nama});
-      return setPesanSuccess('Data berhasil diubah');
-    }
-    addItems(nama);
-    setNama('');
-    setPesanError('');
-    setPesanSuccess('Data berhasil ditambahkan');
+    setPesanToast(res.data);
+    resetInput();
   };
   return (
     <Overlay
@@ -79,38 +100,34 @@ const Form = ({open, setOpen, nameForm, setPesanSuccess, dataEdit}) => {
                 }}></View>
             </View>
           </View>
-          {/* Pesan jika error */}
-          {pesanError && (
-            <Text
-              style={{
-                textAlign: 'center',
-                color: colors.pink,
-                marginBottom: 10,
-              }}>
-              {pesanError}
-            </Text>
-          )}
           <View>
-            <Text style={styles.inputLabel}>Nama Item</Text>
-            <TextInput
-              style={styles.inputText}
-              value={nama}
-              onChangeText={setNama}
+            <InputComp
+              name="nama"
+              label="Nama Item"
               placeholder="Masukan nama item"
+              control={control}
+              rules={{
+                required: 'Nama tidak boleh kosong',
+              }}
+            />
+          </View>
+          <View>
+            <InputComp
+              name="kode"
+              label="Kode"
+              placeholder="Masukan kode"
+              control={control}
+              rules={{
+                required: 'Kode tidak boleh kosong',
+              }}
             />
           </View>
           {/* tombol simpan */}
-          <View style={{marginTop: 20}}>
-            <Button
-              color={colors.primary}
-              buttonStyle={{
-                borderRadius: 20,
-              }}
-              title="Simpan"
-              titleStyle={{
-                fontFamily: 'Poppins_400Regular',
-              }}
-              onPress={handelSimpan}
+          <View className="mt-5">
+            <ButtonComp
+              label="Simpan"
+              radius={20}
+              onPress={handleSubmit(handelSimpan)}
             />
           </View>
         </View>

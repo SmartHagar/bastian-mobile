@@ -45,7 +45,6 @@ const Kwitansi = ({ route }) => {
 
   // show toast
   const setPesanSuccess = (pesan) => {
-    console.log("test");
     Toast.show({
       type: "success",
       text1: `${pesan} 👋`,

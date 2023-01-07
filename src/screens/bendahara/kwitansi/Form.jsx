@@ -53,7 +53,6 @@ const Form = ({open, setOpen, nameForm}) => {
   }, []);
 
   const handelSimpan = async () => {
-    console.log(image);
     setLoading(true);
     const item = {
       transaksi_id,

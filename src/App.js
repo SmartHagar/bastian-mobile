@@ -6,7 +6,7 @@ import colors from './styles/colors';
 const App = () => {
   return (
     <>
-      <StatusBar backgroundColor={colors.blue} />
+      <StatusBar backgroundColor={colors.pink} />
       <StackNav />
     </>
   );

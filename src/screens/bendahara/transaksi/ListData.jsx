@@ -78,7 +78,6 @@ const ListData = ({
                   }}>
                   {item.item.nama}
                 </Text>
-                {console.log(item)}
                 <Text
                   style={{
                     fontSize: 14,

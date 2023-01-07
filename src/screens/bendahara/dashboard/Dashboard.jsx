@@ -1,15 +1,17 @@
 /** @format */
 
 import {
+  BackHandler,
   Dimensions,
   Image,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
+  ToastAndroid,
   View,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import MenuHome from '../../../components/bendahara/MenuHome';
 import logo from '../../../assets/images/logo.png';
 import colors from '../../../styles/colors';
@@ -30,6 +32,33 @@ const Dashboard = ({navigation}) => {
     // Return the function to unsubscribe from the event so it gets removed on unmount
     return unsubscribe;
   }, [navigation]);
+
+  // exit
+  const [exitApp, setExitApp] = useState(0);
+  const backAction = () => {
+    setTimeout(() => {
+      setExitApp(0);
+    }, 2000); // 2 seconds to tap second-time
+
+    if (exitApp === 0) {
+      setExitApp(exitApp + 1);
+
+      ToastAndroid.show(
+        'Sekali lagi untuk keluar aplikasi',
+        ToastAndroid.SHORT,
+      );
+    } else if (exitApp === 1) {
+      BackHandler.exitApp();
+    }
+    return true;
+  };
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove();
+  });
 
   return (
     <SafeAreaView>
@@ -124,7 +153,7 @@ const Dashboard = ({navigation}) => {
                 fontSize: 16,
                 color: colors.primary,
               }}>
-              Pemasukan Terakhir
+              Pengeluaran Terakhir
             </Text>
             {/* item */}
             <View

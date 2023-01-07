@@ -20,7 +20,6 @@ const About = () => {
   const {setLogout} = useLogin();
   const handleLogout = async () => {
     const cek = await setLogout();
-    console.log(cek);
     if (cek) {
       navigation.navigate('Login');
     }
