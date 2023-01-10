@@ -13,7 +13,7 @@ import myColors from '../styles/colors';
 
 // icons
 import NotificationContext from '../tools/NotificationContext';
-import colors from '../styles/colors';
+import Kantin from '../screens/bendahara/kantin/Kantin';
 
 const BendaharaTab = createBottomTabNavigator();
 
@@ -53,14 +53,14 @@ const TapNavBendahara = () => {
           }}
         />
         <BendaharaTab.Screen
-          name="Items"
+          name="Unit"
           component={Items}
           options={{
             headerTitleAlign: 'center',
             headerTitleStyle: {fontSize: 16, fontFamily: 'Poppins-Medium'},
             headerTintColor: '#fff',
             headerStyle: {backgroundColor: myColors.primary},
-            tabBarLabel: 'Items',
+            tabBarLabel: 'Unit',
             tabBarIcon: ({focused, color, size}) => (
               <Icon
                 name="pushpino"
@@ -81,6 +81,25 @@ const TapNavBendahara = () => {
                   }}
                 />
               </TouchableOpacity>
+            ),
+          }}
+        />
+        <BendaharaTab.Screen
+          name="Kantin"
+          component={Kantin}
+          options={{
+            headerTitleAlign: 'center',
+            headerTitleStyle: {fontSize: 16, fontFamily: 'Poppins-Medium'},
+            headerTintColor: '#fff',
+            headerStyle: {backgroundColor: myColors.primary},
+            tabBarLabel: 'Kantin',
+            tabBarIcon: ({focused, color, size}) => (
+              <Icon
+                name="pushpino"
+                type="antdesign"
+                size={24}
+                color={focused ? myColors.pink : myColors.yellow}
+              />
             ),
           }}
         />

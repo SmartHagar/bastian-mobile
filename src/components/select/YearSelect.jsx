@@ -5,6 +5,7 @@ import React, {useEffect, useRef} from 'react';
 
 import SelectDropdown from 'react-native-select-dropdown';
 import {Icon} from '@rneui/themed';
+import colors from '../../styles/colors';
 
 const dtYear = [];
 
@@ -59,4 +60,34 @@ const YearSelect = ({pilihTahun, isReset}) => {
 
 export default YearSelect;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  // dropdown
+  dropdown4BtnStyle: {
+    width: '100%',
+    height: 35,
+    backgroundColor: '#FFF',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.dark,
+  },
+  dropdown4BtnTxtStyle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 14,
+    textAlign: 'left',
+  },
+  dropdown4DropdownStyle: {
+    backgroundColor: '#EFEFEF',
+    borderRadius: 8,
+  },
+  dropdown4RowStyle: {
+    backgroundColor: '#EFEFEF',
+    borderBottomColor: '#C5C5C5',
+    height: 45,
+  },
+  dropdown4RowTxtStyle: {
+    color: colors.dark,
+    fontFamily: 'Poppins-Regular',
+    fontSize: 14,
+    textAlign: 'left',
+  },
+});

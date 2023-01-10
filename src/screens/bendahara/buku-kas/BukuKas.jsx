@@ -93,8 +93,8 @@ const BukuKas = () => {
   };
 
   return (
-    <SafeAreaView style={{marginHorizontal: 5, marginVertical: '5%'}}>
-      <View>
+    <SafeAreaView className="flex-1">
+      <View className="mt-2">
         <Text
           style={{
             color: colors.dark,
@@ -105,26 +105,11 @@ const BukuKas = () => {
           excel
         </Text>
       </View>
-      <View
-        style={{
-          borderBottomColor: '#ffff',
-          borderBottomWidth: 1,
-          shadowColor: '#000',
-          shadowOffset: {
-            width: 0,
-            height: 12,
-          },
-          shadowOpacity: 0.58,
-          shadowRadius: 16.0,
-
-          elevation: 24,
-          marginTop: 10,
-        }}>
-        <View
-          style={{
-            flexDirection: 'row',
-          }}>
+      <View className="flex-row space-x-4 justify-center">
+        <View className="w-[45%]">
           <MonthSelect pilihBulan={pilihBulan} isReset={reset} />
+        </View>
+        <View className="w-[45%]">
           <YearSelect pilihTahun={pilihTahun} isReset={reset} />
         </View>
       </View>

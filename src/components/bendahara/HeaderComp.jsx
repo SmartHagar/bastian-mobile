@@ -8,6 +8,10 @@ import {Icon} from '@rneui/themed';
 
 const HeaderComp = ({nama, setOpen, setCekEdit}) => {
   const navigation = useNavigation();
+  const handleOpen = () => {
+    setOpen(true);
+    setCekEdit(false);
+  };
   return (
     <View style={styles.container}>
       <View
@@ -21,10 +25,7 @@ const HeaderComp = ({nama, setOpen, setCekEdit}) => {
         <Text style={styles.text}>{nama}</Text>
         <View
           style={{flexDirection: 'row', justifyContent: 'flex-end', flex: 1}}>
-          <TouchableOpacity
-            onPress={() => {
-              setOpen(true), setCekEdit(false);
-            }}>
+          <TouchableOpacity onPress={handleOpen}>
             <Icon name="plus" type="evilicon" size={30} color="#fff" />
           </TouchableOpacity>
         </View>

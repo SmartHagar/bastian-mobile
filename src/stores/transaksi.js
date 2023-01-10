@@ -1,104 +1,114 @@
 /** @format */
 
-import create from "zustand";
-import { devtools } from "zustand/middleware";
-import useUrl from "../services/base_url";
+import create from 'zustand';
+import {devtools} from 'zustand/middleware';
+import useUrl from '../services/base_url';
 
-const { crud } = useUrl();
+const {crud} = useUrl();
 
 const useTransaksi = create(
   devtools((set, get) => ({
     responses: {},
-    arrData: [],
-    setTransaksi: async (jenis, bulan = "", tahun = "") => {
-      //   const getToken = JSON.parse(localStorage.getItem("token"));
+    dtTransaksi: [],
+    setTransaksi: async (
+      cari = {search: '', bulan: '', tahun: '', kantin: false},
+      jenis = '',
+    ) => {
       try {
         const response = await crud({
-          method: "get",
+          method: 'get',
           url: `/transaksi`,
-          //   headers: { Authorization: `Bearer ${getToken}` },
+          // headers: { Authorization: `Bearer ${getToken}` },
           params: {
             jenis,
-            bulan,
-            tahun,
+            search: cari.search,
+            bulan: cari.bulan,
+            tahun: cari.tahun,
           },
         });
-        set((state) => ({ ...state, responses: response }));
-        set((state) => ({ ...state, arrData: response.data }));
+        const {data} = response;
+        let filterKantin;
+        // filter data tanpa kantin
+        if (!cari.kantin) {
+          filterKantin = data.filter(function (row) {
+            return !row.item.nama.toLowerCase().includes('kantin');
+          });
+        }
+        if (cari.kantin) {
+          filterKantin = data.filter(function (row) {
+            return row.item.nama.toLowerCase().includes('kantin');
+          });
+        }
+        set(state => ({...state, responses: filterKantin}));
+        set(state => ({...state, dtTransaksi: filterKantin}));
         return {
-          status: "berhasil",
-          data: response.data,
+          status: 'berhasil',
+          data: filterKantin,
         };
       } catch (error) {
         return {
-          status: "error",
+          status: 'error',
           error: error.response.data,
         };
       }
     },
-    addTransaksi: async (row) => {
-      console.log(row);
-      // const getToken = JSON.parse(localStorage.getItem("token"));
+    addData: async items => {
       try {
         const res = await crud({
-          method: "post",
+          method: 'post',
           url: `/transaksi`,
           // headers: { Authorization: `Bearer ${getToken}` },
-          data: row,
+          data: items,
         });
-
-        set((state) => ({
-          arrData: [res.data.data, ...state.arrData],
+        set(state => ({
+          dtTransaksi: [res.data.data, ...state.dtTransaksi],
         }));
         return {
-          status: "berhasil",
+          status: 'berhasil',
           data: res.data,
         };
       } catch (error) {
-        console.log(error);
         return {
-          status: "error",
+          status: 'error',
+          data: error.response.data,
         };
       }
     },
-    removeTransaksi: async (id) => {
-      //   const getToken = JSON.parse(localStorage.getItem("token"));
+    removeData: async id => {
       try {
         const res = await crud({
-          method: "delete",
+          method: 'delete',
           url: `/transaksi/${id}`,
-          //   headers: { Authorization: `Bearer ${getToken}` },
+          // headers: { Authorization: `Bearer ${getToken}` },
         });
-        set((state) => ({
-          arrData: state.arrData.filter((item) => item.id !== id),
+        set(state => ({
+          dtTransaksi: state.dtTransaksi.filter(item => item.id !== id),
         }));
         return {
-          status: "berhasil",
+          status: 'berhasil',
           data: res.data,
         };
       } catch (error) {
         return {
-          status: "error",
-          error: error.response.data,
+          status: 'error',
+          data: error.response.data,
         };
       }
     },
-    updateTransaksi: async (id, row) => {
-      // const getToken = JSON.parse(localStorage.getItem("token"));
-      console.log(row);
+    updateData: async (id, row) => {
       try {
         const response = await crud({
-          method: "put",
+          method: 'put',
           url: `/transaksi/${id}`,
           // headers: { Authorization: `Bearer ${getToken}` },
           data: row,
         });
-        set((state) => ({
-          arrData: state.arrData.map((item) => {
+        set(state => ({
+          dtTransaksi: state.dtTransaksi.map(item => {
             if (item.id === id) {
               return {
                 ...item,
-                ...row,
+                ...response.data.data,
               };
             } else {
               return item;
@@ -106,17 +116,17 @@ const useTransaksi = create(
           }),
         }));
         return {
-          status: "berhasil",
+          status: 'berhasil',
           data: response.data,
         };
       } catch (error) {
         return {
-          status: "error",
-          error: error.response.data,
+          status: 'error',
+          data: error.response.data,
         };
       }
     },
-  }))
+  })),
 );
 
 export default useTransaksi;

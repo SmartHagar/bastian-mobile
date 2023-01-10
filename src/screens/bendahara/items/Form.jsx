@@ -10,8 +10,10 @@ import useItem from '../../../stores/Items';
 import InputComp from '../../../components/form/InputComp';
 import ButtonComp from '../../../components/form/ButtonComp';
 import {useForm} from 'react-hook-form';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import showToast from '../../../services/show-toast';
 
-const Form = ({open, setOpen, nameForm, setPesanToast, dataEdit = false}) => {
+const Form = ({open, setOpen, nameForm, dataEdit = false}) => {
   const winWidth = Dimensions.get('window').width;
   const winHeight = Dimensions.get('window').height;
 
@@ -19,11 +21,8 @@ const Form = ({open, setOpen, nameForm, setPesanToast, dataEdit = false}) => {
   const {addItems, updateItems} = useItem();
 
   // event tampil
-  const [visible, setVisible] = useState(open);
   const toggleOverlay = () => {
-    setVisible(false);
     setOpen(false);
-    setPesanToast(false);
   };
 
   // hook-form
@@ -59,7 +58,6 @@ const Form = ({open, setOpen, nameForm, setPesanToast, dataEdit = false}) => {
       );
 
     !dataEdit && resetInput();
-    setPesanToast(false);
   }, [dataEdit]);
   // ketika tombol simpan ditekan
   const handelSimpan = async data => {
@@ -67,68 +65,72 @@ const Form = ({open, setOpen, nameForm, setPesanToast, dataEdit = false}) => {
     let res;
     if (dataEdit) {
       res = await updateItems(dataEdit.id, data);
+      setOpen(false);
     } else {
       res = await addItems(data);
     }
-    setPesanToast(res.data);
+    showToast(res.data);
     resetInput();
   };
   return (
     <Overlay
-      isVisible={visible}
+      isVisible={open}
       onBackdropPress={toggleOverlay}
       overlayStyle={{borderRadius: 10}}>
       <KeyboardAvoidingComp>
-        <View style={{width: winWidth / 1.5}}>
-          {/* judul */}
-          <View style={{height: 40}}>
-            <View style={{flexDirection: 'row'}}>
-              <View
-                style={{
-                  height: 1,
-                  flex: 1,
-                  backgroundColor: colors.yellow,
-                  marginTop: 13,
-                }}></View>
-              <Text style={styles.textPrimary}>Form {nameForm}</Text>
-              <View
-                style={{
-                  height: 1,
-                  flex: 1,
-                  backgroundColor: colors.yellow,
-                  marginTop: 13,
-                }}></View>
+        <View>
+          <Toast topOffset={0} />
+          <View style={{width: winWidth / 1.5}}>
+            {/* judul */}
+            <View style={{height: 40}}>
+              <View style={{flexDirection: 'row'}}>
+                <View
+                  style={{
+                    height: 1,
+                    flex: 1,
+                    backgroundColor: colors.yellow,
+                    marginTop: 13,
+                  }}></View>
+                <Text style={styles.textPrimary}>Form {nameForm}</Text>
+                <View
+                  style={{
+                    height: 1,
+                    flex: 1,
+                    backgroundColor: colors.yellow,
+                    marginTop: 13,
+                  }}></View>
+              </View>
             </View>
-          </View>
-          <View>
-            <InputComp
-              name="nama"
-              label="Nama Item"
-              placeholder="Masukan nama item"
-              control={control}
-              rules={{
-                required: 'Nama tidak boleh kosong',
-              }}
-            />
-          </View>
-          <View>
-            <InputComp
-              name="kode"
-              label="Kode"
-              placeholder="Masukan kode"
-              control={control}
-              rules={{
-                required: 'Kode tidak boleh kosong',
-              }}
-            />
-          </View>
-          {/* tombol simpan */}
-          <View className="mt-5">
-            <ButtonComp
-              label="Simpan"
-              radius={20}
-              onPress={handleSubmit(handelSimpan)}
-            />
+            <View>
+              <InputComp
+                name="nama"
+                label="Nama Unit"
+                placeholder="Masukan nama unit"
+                control={control}
+                rules={{
+                  required: 'Nama tidak boleh kosong',
+                }}
+              />
+            </View>
+            <View>
+              <InputComp
+                name="kode"
+                label="Kode"
+                placeholder="Masukan kode"
+                control={control}
+                rules={{
+                  required: 'Kode tidak boleh kosong',
+                }}
+              />
+            </View>
+            {/* tombol simpan */}
+            <View className="mt-5">
+              <ButtonComp
+                label="Simpan"
+                radius={20}
+                onPress={handleSubmit(handelSimpan)}
+              />
+            </View>
           </View>
         </View>
       </KeyboardAvoidingComp>

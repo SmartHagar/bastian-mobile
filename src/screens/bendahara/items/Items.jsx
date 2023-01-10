@@ -13,7 +13,7 @@ import Toast from 'react-native-toast-message';
 import showToast from '../../../services/show-toast';
 
 const Items = () => {
-  const nama = 'Items';
+  const nama = 'Unit';
   const tapOpen = useContext(NotificationContext);
 
   const [dataEdit, setDataEdit] = useState(false);
@@ -53,11 +53,8 @@ const Items = () => {
   // menghapus data
   const deleteData = async () => {
     const res = await removeItems(id);
-    setPesanToast(res);
+    setPesanToast(res.data);
   };
-
-  // show toast
-  pesanToast && showToast(pesanToast), console.log(pesanToast);
 
   return (
     <SafeAreaView>
@@ -67,7 +64,6 @@ const Items = () => {
             open={open}
             setOpen={setOpen}
             nameForm={nama}
-            setPesanToast={setPesanToast}
             dataEdit={dataEdit}
           />
         )}

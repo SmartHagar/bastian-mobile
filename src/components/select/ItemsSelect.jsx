@@ -1,77 +1,50 @@
-/** @format */
-
 import {StyleSheet, Text, View} from 'react-native';
-import {useEffect, useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import SelectDropdown from 'react-native-select-dropdown';
-import {Icon} from '@rneui/themed';
+import useItem from '../../stores/Items';
 import colors from '../../styles/colors';
+import Icon from 'react-native-vector-icons/EvilIcons';
 
-const dtMonth = [
-  {
-    value: '1',
-    label: 'Januari',
-  },
-  {
-    value: '2',
-    label: 'Februari',
-  },
-  {
-    value: '3',
-    label: 'Maret',
-  },
-  {
-    value: '4',
-    label: 'April',
-  },
-  {
-    value: '5',
-    label: 'Mei',
-  },
-  {
-    value: '6',
-    label: 'Juni',
-  },
-  {
-    value: '7',
-    label: 'Juli',
-  },
-  {
-    value: '8',
-    label: 'Agustus',
-  },
-  {
-    value: '9',
-    label: 'September',
-  },
-  {
-    value: '10',
-    label: 'Oktober',
-  },
-  {
-    value: '11',
-    label: 'November',
-  },
-  {
-    value: '12',
-    label: 'Desember',
-  },
-];
-
-const MonthSelect = ({pilihBulan, isReset}) => {
+const ItemsSelect = ({
+  disable = false,
+  kantin = false,
+  pilihItem,
+  setPilihItem,
+  ...props
+}) => {
+  // ambil data items
+  const {getItems, dtItem} = useItem();
+  // reset select
   const dropdownRef = useRef({});
-
   useEffect(() => {
     dropdownRef.current.reset();
-    console.log('reset');
-  }, [isReset]);
+    getItems();
+  }, []);
+
+  let data = dtItem;
+  if (!kantin) {
+    // data = data.filter((row) => row.nama.toLowerCase() !== "kantin");
+    data = data.filter(function (row) {
+      return !row.nama.toLowerCase().includes('kantin');
+    });
+  }
+
+  // pilihan Item
+  const optionsItem = data.map(function (Item) {
+    return {
+      value: Item.id,
+      label: `${Item.nama}`,
+      data: `${Item.kode}`,
+    };
+  });
 
   return (
     <SelectDropdown
       search={true}
-      data={dtMonth}
+      data={optionsItem}
       ref={dropdownRef}
       onSelect={selectedItem => {
-        pilihBulan(selectedItem.value);
+        setPilihItem(selectedItem);
       }}
       buttonTextAfterSelection={(selectedItem, index) => {
         return selectedItem.label;
@@ -79,7 +52,6 @@ const MonthSelect = ({pilihBulan, isReset}) => {
       rowTextForSelection={(item, index) => {
         return item.label;
       }}
-      defaultButtonText="Pilih Bulan"
       buttonStyle={styles.dropdown4BtnStyle}
       buttonTextStyle={styles.dropdown4BtnTxtStyle}
       renderDropdownIcon={isOpened => {
@@ -88,7 +60,6 @@ const MonthSelect = ({pilihBulan, isReset}) => {
             name={isOpened ? 'chevron-up' : 'chevron-down'}
             type="evilicon"
             size={18}
-            color={'#444'}
           />
         );
       }}
@@ -96,11 +67,12 @@ const MonthSelect = ({pilihBulan, isReset}) => {
       dropdownStyle={styles.dropdown4DropdownStyle}
       rowStyle={styles.dropdown4RowStyle}
       rowTextStyle={styles.dropdown4RowTxtStyle}
+      {...props}
     />
   );
 };
 
-export default MonthSelect;
+export default ItemsSelect;
 
 const styles = StyleSheet.create({
   // dropdown

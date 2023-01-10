@@ -1,6 +1,13 @@
 /** @format */
 
-import {Dimensions, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {
+  Dimensions,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import HeaderComp from '../../../components/bendahara/HeaderComp';
 import Form from './Form';
@@ -15,6 +22,7 @@ import colors from '../../../styles/colors';
 import MonthSelect from '../../../components/select/MonthSelect';
 import useItem from '../../../stores/Items';
 import YearSelect from '../../../components/select/YearSelect';
+import showToast from '../../../services/show-toast';
 
 // dimensions
 const winWidth = Dimensions.get('window').width;
@@ -22,12 +30,14 @@ const winHeight = Dimensions.get('window').height;
 
 const Transaksi = ({route}) => {
   const {nama} = route.params;
-  // ambil data items
-  const {getItems, dtItem} = useItem();
+  //  open Form
   const [open, setOpen] = useState(false);
   // state filter data
   const [bulan, setBulan] = useState('');
   const [tahun, setTahun] = useState('');
+  const [search, setSearch] = useState('');
+  // state reset form
+  const [resetForm, setResetForm] = useState(false);
 
   const [dataEdit, setDataEdit] = useState(false);
   // show dialog
@@ -35,13 +45,8 @@ const Transaksi = ({route}) => {
   const [id, setId] = useState(false);
   const [cekEdit, setCekEdit] = useState(false);
   // set & get data item
-  const {
-    arrData,
-    setTransaksi,
-    removeTransaksi,
-    addTransaksi,
-    updateTransaksi,
-  } = useTransaksi();
+  const {dtTransaksi, setTransaksi, removeData, addData, updateData} =
+    useTransaksi();
 
   // loading
   const [loading, setLoading] = useState(false);
@@ -49,31 +54,25 @@ const Transaksi = ({route}) => {
   // load data item
   useEffect(() => {
     const fetchData = async () => {
-      await setTransaksi(nama);
+      await setTransaksi({search}, nama);
       setLoading(true);
       setBulan('');
       setTahun('');
     };
     fetchData();
-    getItems();
   }, []);
 
-  // filter data by bulan
-  const pilihBulan = async psBulan => {
-    setBulan(psBulan);
-    // console.log(psBulan, tahun);
-    setLoading(false);
-    await setTransaksi(nama, psBulan, tahun);
-    setLoading(true);
-  };
-  // filter data by tahun
-  const pilihTahun = async psTahun => {
-    setTahun(psTahun);
-    // console.log(bulan, psTahun);
-    setLoading(false);
-    await setTransaksi(nama, bulan, psTahun);
-    setLoading(true);
-  };
+  // filter bulan dan tahun
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(false);
+      await setTransaksi({search, bulan, tahun}, nama);
+      setLoading(true);
+    };
+    fetchData();
+    return () => {};
+  }, [bulan, tahun]);
+
   const handleEdit = item => {
     setOpen(true);
     setCekEdit(true);
@@ -88,7 +87,7 @@ const Transaksi = ({route}) => {
 
   // menghapus data
   const deleteData = async () => {
-    const cek = await removeTransaksi(id);
+    const cek = await removeData(id);
     if (cek.status === 'berhasil') {
       setPesanSuccess('Data Berhasil Dihapus');
     }
@@ -102,28 +101,27 @@ const Transaksi = ({route}) => {
     });
   };
   const saveData = async data => {
+    let cek;
     if (cekEdit) {
-      const cek = await updateTransaksi(dataEdit.id, data);
-      if (cek.status === 'berhasil') {
-        setOpen(false);
-        setTransaksi(nama);
-        setPesanSuccess('Data Berhasil Diubah');
-      }
-      return 0;
+      cek = await updateData(dataEdit.id, data);
+      console.log(cek);
+      setOpen(false);
+    } else {
+      cek = await addData(data);
     }
-    const cek = await addTransaksi(data);
-    if (cek.status === 'berhasil') {
-      setPesanSuccess('Data Berhasil Ditambahkan');
+    if (cek.data.type === 'success') {
+      setResetForm(true);
     }
+    showToast(cek.data);
+    setLoading(true);
   };
 
-  // refresh data
+  // refresh data dan reset select
   const [refreshing, setRefreshing] = useState(false);
-  let isReset = true;
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await setTransaksi(nama, '', '');
+    await setTransaksi({search}, nama);
     setBulan('');
     setTahun('');
     setRefreshing(false);
@@ -134,13 +132,13 @@ const Transaksi = ({route}) => {
       <HeaderComp nama={nama} setOpen={setOpen} setCekEdit={setCekEdit} />
       <View>
         {/* Date Picker */}
-        <View
-          style={{
-            flexDirection: 'row',
-            elevation: 3,
-          }}>
-          <MonthSelect pilihBulan={pilihBulan} isReset={refreshing} />
-          <YearSelect pilihTahun={pilihTahun} isReset={refreshing} />
+        <View className="flex-row space-x-4 justify-center mt-1">
+          <View className="w-[45%]">
+            <MonthSelect pilihBulan={setBulan} isReset={refreshing} />
+          </View>
+          <View className="w-[45%]">
+            <YearSelect pilihTahun={setTahun} isReset={refreshing} />
+          </View>
         </View>
         {/* Opan form */}
         {open && (
@@ -149,10 +147,12 @@ const Transaksi = ({route}) => {
             setOpen={setOpen}
             nameForm={nama}
             setPesanSuccess={setPesanSuccess}
-            dtItem={dtItem}
             dtSimpan={saveData}
             cekEdit={cekEdit}
             dataEdit={dataEdit}
+            resetForm={resetForm}
+            setLoading={setLoading}
+            loading={loading}
           />
         )}
         {/* dialog delete */}
@@ -170,7 +170,7 @@ const Transaksi = ({route}) => {
           </View>
         ) : (
           <ListData
-            arrData={arrData}
+            arrData={dtTransaksi}
             handleHapus={handleHapus}
             handleEdit={handleEdit}
             onRefresh={onRefresh}
@@ -178,7 +178,7 @@ const Transaksi = ({route}) => {
           />
         )}
       </View>
-      {arrData.length === 0 && (
+      {dtTransaksi.length === 0 && (
         <Text style={styles.kosong}>Belum ada data {nama}</Text>
       )}
       <Toast topOffset={0} />
@@ -191,8 +191,8 @@ export default Transaksi;
 const styles = StyleSheet.create({
   kosong: {
     textAlign: 'center',
-    marginTop: '50%',
-    fontFamily: 'Poppins_500Medium',
+    marginBottom: '50%',
+    fontFamily: 'Poppins-Regular',
     color: colors.pink,
   },
   loadingComp: {

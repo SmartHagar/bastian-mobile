@@ -1,16 +1,17 @@
-import {StyleSheet, Text, TextInput, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import colors from '../../styles/colors';
 import {Controller} from 'react-hook-form';
+// Masked input
+import MaskInput, {createNumberMask} from 'react-native-mask-input';
+const rupiahMask = createNumberMask({
+  prefix: ['Rp', '.', ' '],
+  delimiter: '.',
+  separator: ',',
+  precision: 0,
+});
 
-const InputComp = ({
-  label = false,
-  control,
-  name,
-  rules = {},
-  editable = true,
-  ...props
-}) => {
+const InputRupiah = ({label = false, control, name, rules = {}, ...props}) => {
   return (
     <>
       <Text className="text-black font-[Poppins-Regular]">{label}</Text>
@@ -25,17 +26,14 @@ const InputComp = ({
                 styles.container,
                 {borderColor: error ? 'red' : '#e8e8e8'},
               ]}>
-              <TextInput
+              <MaskInput
                 value={value}
                 onChangeText={onChange}
                 style={{borderColor: colors.dark}}
-                className={`border py-0 px-2 rounded-md font-[Poppins-Regular] text-sm text-black  ${
-                  !editable && 'bg-gray-200'
-                }`}
+                className="border py-0 px-2 rounded-md font-[Poppins-Regular] text-sm text-black"
+                mask={rupiahMask}
                 placeholderTextColor="#979696"
-                onBlur={onBlur}
-                editable={editable}
-                {...props}
+                keyboardType="numeric"
               />
             </View>
             {error && (
@@ -52,6 +50,6 @@ const InputComp = ({
   );
 };
 
-export default InputComp;
+export default InputRupiah;
 
 const styles = StyleSheet.create({});

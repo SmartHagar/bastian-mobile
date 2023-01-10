@@ -212,5 +212,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    marginBottom: 20,
   },
 });

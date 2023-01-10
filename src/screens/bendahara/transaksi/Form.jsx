@@ -1,47 +1,48 @@
 /** @format */
 
-import {Dimensions, StyleSheet, Text, TextInput, View} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
-import {Button, Icon, Overlay} from '@rneui/themed';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Button, Overlay} from '@rneui/themed';
 import colors from '../../../styles/colors';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-
-// Masked input
-import MaskInput, {createNumberMask} from 'react-native-mask-input';
-const rupiahMask = createNumberMask({
-  prefix: ['Rp', '.', ' '],
-  delimiter: '.',
-  separator: ',',
-  precision: 0,
-});
 
 // dimensions
 const winWidth = Dimensions.get('window').width;
 const winHeight = Dimensions.get('window').height;
 
 // select
-import SelectDropdown from 'react-native-select-dropdown';
 import KeyboardAvoidingComp from '../../../components/KeyboardAvoidingComp';
+import ItemsSelect from '../../../components/select/ItemsSelect';
+import {useForm} from 'react-hook-form';
+import InputComp from '../../../components/form/InputComp';
+import InputRupiah from '../../../components/form/InputRupiah';
+import TextComp from '../../../components/form/TextComp';
+import kodefikasi from '../../../services/kodefikasi';
+import useTransaksiAPI from '../../../stores/api/transaksi';
+import LoadingComp from '../../../components/LoadingComp';
 
 const Form = ({
   open,
   setOpen,
   nameForm,
-  dtItem,
   dataEdit,
   dtSimpan,
   cekEdit,
+  resetForm,
+  loading,
+  setLoading,
 }) => {
+  // store
+  const {setTransaksi, dtTransaksi} = useTransaksiAPI();
+  //  state
   const [visible, setVisible] = useState(open);
   // date
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
-  const [itemId, setItemId] = useState('');
-  const [jumlah, setJumlah] = useState('');
-  const [ket, setKet] = useState('');
-  // pesan toast
-  const [pesanError, setPesanError] = useState('');
+  const [pilihItem, setPilihItem] = useState('');
+  const [kode, setKode] = useState('');
+  const [noUrut, setNoUrut] = useState('');
   // hidden form
   const toggleOverlay = () => {
     setVisible(false);
@@ -53,52 +54,88 @@ const Form = ({
     setShowPicker(false);
     setDate(currentDate);
   };
-  // reset select
-  const dropdownRef = useRef({});
-  useEffect(() => {
-    dropdownRef.current.reset();
-  }, []);
 
-  // jika tombol edit ditekan
-  useEffect(() => {
-    setJumlah('');
-    if (cekEdit) {
-      setJumlah(`${dataEdit.jumlah}`);
-      setItemId(dataEdit.item_id);
-      setDate(new Date(dataEdit.tgl_transaksi));
-      setKet(dataEdit.ket);
+  const cekKode = async () => {
+    // kode baru
+    let kode = '';
+    if (pilihItem) {
+      const res = await setTransaksi();
+      kode = `${moment(date).format('DD/MM/YYYY')}-${pilihItem.data}`;
+      const no_urut = kodefikasi({old_prefix: res.data, new_prefix: kode});
+      setKode(kode);
+      setNoUrut(no_urut);
+      setValue('kode', `${kode}-${no_urut}`);
     }
+  };
+
+  // hook-form
+  const {control, handleSubmit, reset, setValue} = useForm({});
+  // memanggil kodefikasi
+  useEffect(() => {
+    if (!cekEdit) {
+      cekKode();
+    }
+    return () => {};
+  }, [pilihItem, date]);
+
+  // ketika tombol edit ditekan
+  useEffect(() => {
+    cekEdit &&
+      reset(
+        {
+          jumlah: `Rp. ${dataEdit.jumlah}`,
+          ket: dataEdit.ket,
+          kode: `${dataEdit.kode}-${dataEdit.no_urut}`,
+        },
+        setDate(new Date(dataEdit.tgl_transaksi)),
+        setPilihItem({value: dataEdit.item_id}),
+        setKode(dataEdit.kode),
+        setNoUrut(dataEdit.no_urut),
+        {
+          keepErrors: true,
+          keepDirty: true,
+        },
+      );
+    !cekEdit && resetInput();
   }, [dataEdit]);
 
-  // validasi
-  const validation = () => {
-    if (itemId.length === 0) {
-      setPesanError('Item tidak boleh kosong');
-      return false;
+  // mereset form
+  useEffect(() => {
+    if (resetForm && !cekEdit) {
+      resetInput();
+      console.log('reset input');
     }
-    if (jumlah.length === 0) {
-      setPesanError('Jumlah tidak boleh kosong');
-      return false;
-    }
-    // jika berhasil
-    return true;
+    return () => {};
+  }, [dtSimpan, dataEdit]);
+
+  const resetInput = () => {
+    reset(
+      {
+        jumlah: '',
+        ket: '',
+        kode: '',
+      },
+      setDate(new Date()),
+      {
+        keepErrors: true,
+        keepDirty: true,
+      },
+    );
+    cekKode();
   };
   // jika tombol simpan ditekan
-  const handelSimpan = () => {
-    if (!validation()) {
-      return 0;
-    }
-    const item = {
-      item_id: itemId,
-      jenis: nameForm,
-      tgl_transaksi: moment(date).format('YYYY-MM-DD'),
-      jumlah: parseInt(jumlah),
-      ket,
-    };
-    // return console.log("item", item);
-    dtSimpan(item);
-    setJumlah('');
-    setKet('');
+  const handelSimpan = data => {
+    setLoading(false);
+    data.item_id = pilihItem.value;
+    data.jenis = nameForm;
+    data.tgl_transaksi = moment(date).format('YYYY-MM-DD');
+    data.kode = kode;
+    data.no_urut = noUrut;
+    // strip non numeric
+    const intJmlh = data.jumlah.replace(/\D/g, '');
+    data.jumlah = intJmlh;
+    console.log(data);
+    dtSimpan(data);
   };
   return (
     <View>
@@ -129,17 +166,7 @@ const Form = ({
                   }}></View>
               </View>
             </View>
-            {/* Pesan jika error */}
-            {pesanError && (
-              <Text
-                style={{
-                  textAlign: 'center',
-                  color: colors.pink,
-                  marginBottom: 10,
-                }}>
-                {pesanError}
-              </Text>
-            )}
+
             <View style={styles.containerInput}>
               <Text style={styles.inputLabel}>Tanggal {nameForm}</Text>
               <View>
@@ -158,64 +185,51 @@ const Form = ({
               </View>
             </View>
             {/* Pilih Item */}
-            <View style={styles.containerInput}>
-              <Text style={styles.inputLabel}>Pilh Item</Text>
-              <SelectDropdown
-                search={true}
-                data={dtItem}
-                ref={dropdownRef}
-                onSelect={selectedItem => {
-                  setItemId(selectedItem.id);
-                }}
-                buttonTextAfterSelection={(selectedItem, index) => {
-                  return selectedItem.nama;
-                }}
-                rowTextForSelection={(item, index) => {
-                  return item.nama;
-                }}
+            <View>
+              <ItemsSelect
+                setPilihItem={setPilihItem}
                 defaultButtonText={cekEdit ? dataEdit.item.nama : 'Daftar Item'}
-                buttonStyle={styles.dropdown4BtnStyle}
-                buttonTextStyle={styles.dropdown4BtnTxtStyle}
-                renderDropdownIcon={isOpened => {
-                  return (
-                    <Icon
-                      name={isOpened ? 'chevron-up' : 'chevron-down'}
-                      type="evilicon"
-                      size={18}
-                    />
-                  );
-                }}
-                dropdownIconPosition={'right'}
-                dropdownStyle={styles.dropdown4DropdownStyle}
-                rowStyle={styles.dropdown4RowStyle}
-                rowTextStyle={styles.dropdown4RowTxtStyle}
               />
             </View>
+            {/* Kode */}
+            <View style={styles.containerInput}>
+              <InputComp
+                name="kode"
+                label="Kode"
+                control={control}
+                editable={false}
+                rules={{
+                  required: 'Kode tidak boleh kosong',
+                }}
+              />
+            </View>
+
             {/* keterangan */}
             <View style={styles.containerInput}>
-              <Text style={styles.inputLabel}>Keterangan</Text>
-              <TextInput
-                style={styles.inputText}
-                value={ket}
-                onChangeText={setKet}
+              <InputComp
+                name="ket"
+                label="Keterangan"
                 placeholder="Masukan keterangan"
+                control={control}
+                rules={{
+                  required: 'Keterangn boleh kosong',
+                }}
               />
             </View>
             {/* Jumlah */}
-            <View style={styles.containerInput}>
-              <Text style={styles.inputLabel}>Jumlah</Text>
-              <MaskInput
-                style={styles.inputText}
-                value={jumlah}
-                mask={rupiahMask}
-                onChangeText={(masked, unmasked) => {
-                  setJumlah(unmasked); // you can use the masked value as well
+            <View>
+              <InputRupiah
+                name="jumlah"
+                label="Jumlah"
+                control={control}
+                rules={{
+                  required: 'Keterangn boleh kosong',
                 }}
-                keyboardType="numeric"
               />
             </View>
             {/* tombol simpan */}
             <View style={{marginTop: 10}}>
+              {!loading && <LoadingComp />}
               <Button
                 color={colors.primary}
                 buttonStyle={{
@@ -223,9 +237,9 @@ const Form = ({
                 }}
                 title="Simpan"
                 titleStyle={{
-                  fontFamily: 'Poppins_400Regular',
+                  fontFamily: 'Poppins_Regular',
                 }}
-                onPress={handelSimpan}
+                onPress={handleSubmit(handelSimpan)}
               />
             </View>
           </View>
@@ -260,34 +274,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     color: colors.dark,
-  },
-  // dropdown
-  dropdown4BtnStyle: {
-    width: '100%',
-    height: 35,
-    backgroundColor: '#FFF',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: colors.dark,
-  },
-  dropdown4BtnTxtStyle: {
-    fontFamily: 'Poppins_400Regular',
-    fontSize: 14,
-    textAlign: 'left',
-  },
-  dropdown4DropdownStyle: {
-    backgroundColor: '#EFEFEF',
-    borderRadius: 8,
-  },
-  dropdown4RowStyle: {
-    backgroundColor: '#EFEFEF',
-    borderBottomColor: '#C5C5C5',
-    height: 45,
-  },
-  dropdown4RowTxtStyle: {
-    color: colors.dark,
-    fontFamily: 'Poppins_400Regular',
-    fontSize: 14,
-    textAlign: 'left',
   },
 });
