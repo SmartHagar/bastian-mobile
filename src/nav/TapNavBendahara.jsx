@@ -7,7 +7,7 @@ import Dashboard from '../screens/bendahara/dashboard/Dashboard';
 import Items from '../screens/bendahara/items/Items';
 import Akun from '../screens/bendahara/akun/Akun';
 
-import {Icon} from '@rneui/themed';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 import myColors from '../styles/colors';
 
@@ -45,7 +45,6 @@ const TapNavBendahara = () => {
             tabBarIcon: ({focused, color, size}) => (
               <Icon
                 name="home"
-                type="antdesign"
                 size={24}
                 color={focused ? myColors.pink : myColors.yellow}
               />
@@ -64,7 +63,6 @@ const TapNavBendahara = () => {
             tabBarIcon: ({focused, color, size}) => (
               <Icon
                 name="pushpino"
-                type="antdesign"
                 size={24}
                 color={focused ? myColors.pink : myColors.yellow}
               />
@@ -72,9 +70,8 @@ const TapNavBendahara = () => {
             headerRight: () => (
               <TouchableOpacity onPress={openItem}>
                 <Icon
-                  name="plus"
-                  type="evilicon"
-                  size={30}
+                  name="pluscircleo"
+                  size={24}
                   color="#fff"
                   style={{
                     marginEnd: 20,
@@ -95,8 +92,7 @@ const TapNavBendahara = () => {
             tabBarLabel: 'Kantin',
             tabBarIcon: ({focused, color, size}) => (
               <Icon
-                name="pushpino"
-                type="antdesign"
+                name="creditcard"
                 size={24}
                 color={focused ? myColors.pink : myColors.yellow}
               />
@@ -116,7 +112,6 @@ const TapNavBendahara = () => {
               <Icon
                 name="contacts"
                 size={24}
-                type="antdesign"
                 color={focused ? myColors.pink : myColors.yellow}
               />
             ),
