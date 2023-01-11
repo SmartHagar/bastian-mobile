@@ -7,14 +7,14 @@ import {
   Text,
   TouchableWithoutFeedback,
   View,
-} from "react-native";
-import React from "react";
+} from 'react-native';
+import React from 'react';
 
-const KeyboardAvoidingComp = ({ children }) => {
+const KeyboardAvoidingComp = ({children, ...props}) => {
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      {...props}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         {children}
       </TouchableWithoutFeedback>

@@ -24,6 +24,7 @@ const useLogin = create(
         // set((state) => ({ ...state, responses: res.data }));
         const dtAuth = {
           access_token: res.data.access_token,
+          id: res.data.user.id,
           name: res.data.user.name,
           email: res.data.user.email,
           role: res.data.user.role,
@@ -77,6 +78,25 @@ const useLogin = create(
         return {
           status: 'error',
           error: error.response.data,
+        };
+      }
+    },
+
+    setGantiPassword: async item => {
+      try {
+        const res = await auth({
+          method: 'post',
+          url: `/ganti-password`,
+          data: item,
+        });
+        return {
+          status: 'berhasil',
+          data: res.data,
+        };
+      } catch (error) {
+        return {
+          status: 'error',
+          data: error.response.data,
         };
       }
     },

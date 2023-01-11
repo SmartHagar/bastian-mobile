@@ -141,6 +141,7 @@ const styles = StyleSheet.create({
   },
 
   inner: {
+    flex: 1,
     alignItems: 'center',
     marginTop: '10%',
   },
