@@ -16,6 +16,7 @@ import KeyboardAvoidingComp from '../../../components/KeyboardAvoidingComp';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 import LoadingComp from '../../../components/LoadingComp';
+import {check, PERMISSIONS, request} from 'react-native-permissions';
 
 // dimensions
 const winWidth = Dimensions.get('window').width;
@@ -32,6 +33,8 @@ const Form = ({open, setOpen, nameForm}) => {
   const [image, setImage] = useState(null);
   // loading
   const [loading, setLoading] = useState(false);
+  // show peringatan
+  const [showPeringatan, setShowPeringatan] = useState(false);
 
   useEffect(() => {}, [transaksi_id]);
 
@@ -50,6 +53,32 @@ const Form = ({open, setOpen, nameForm}) => {
       quality: 0.9,
     };
     launchImageLibrary(options, setImage);
+  }, []);
+
+  const ijinKamera = async () => {
+    const cek = await check(PERMISSIONS.ANDROID.CAMERA);
+    console.log(cek);
+    if (cek !== 'granted') {
+      // return setShowPeringatan(true);
+      request(PERMISSIONS.ANDROID.CAMERA).then(result => {
+        if (result === 'granted') {
+          openCamera();
+        }
+      });
+    }
+    return openCamera();
+  };
+
+  const openCamera = useCallback(() => {
+    const options = {
+      selectionLimit: 1,
+      mediaType: 'photo',
+      includeBase64: false,
+      maxWidth: 1024,
+      maxHeight: 1024,
+      quality: 0.9,
+    };
+    launchCamera(options, setImage);
   }, []);
 
   const handelSimpan = async () => {
@@ -109,22 +138,40 @@ const Form = ({open, setOpen, nameForm}) => {
               {loading ? (
                 <LoadingComp />
               ) : (
-                <TouchableOpacity onPress={onImageLibraryPress}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      marginBottom: 8,
-                    }}>
-                    <Text style={{color: colors.dark}}>Pilih Gambar</Text>
-                    <Icon
-                      name="picture"
-                      type="antdesign"
-                      size={24}
-                      color={colors.blue}
-                    />
-                  </View>
-                </TouchableOpacity>
+                <View>
+                  <TouchableOpacity onPress={onImageLibraryPress}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        marginBottom: 8,
+                      }}>
+                      <Text style={{color: colors.dark}}>Pilih Gambar</Text>
+                      <Icon
+                        name="picture"
+                        type="antdesign"
+                        size={24}
+                        color={colors.blue}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={ijinKamera}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        marginBottom: 8,
+                      }}>
+                      <Text style={{color: colors.dark}}>Ambil Gambar</Text>
+                      <Icon
+                        name="picture"
+                        type="antdesign"
+                        size={24}
+                        color={colors.blue}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </View>
               )}
               {image?.assets && (
                 <Image

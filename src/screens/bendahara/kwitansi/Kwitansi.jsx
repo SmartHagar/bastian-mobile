@@ -1,16 +1,22 @@
 /** @format */
 
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
-import useKwitansi from "../../../stores/kwitansi";
-import HeaderComp from "../../../components/bendahara/HeaderComp";
-import DeleteDia from "../../../components/dialog/DeleteDia";
-import ListData from "./ListData";
-import Toast from "react-native-toast-message";
-import Form from "./Form";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import useKwitansi from '../../../stores/kwitansi';
+import HeaderComp from '../../../components/bendahara/HeaderComp';
+import DeleteDia from '../../../components/dialog/DeleteDia';
+import ListData from './ListData';
+import Toast from 'react-native-toast-message';
+import Form from './Form';
 
-const Kwitansi = ({ route }) => {
-  const { transaksi_id } = route.params;
+const Kwitansi = ({route}) => {
+  const {transaksi_id} = route.params;
   const [open, setOpen] = useState(false);
 
   const [dataEdit, setDataEdit] = useState(false);
@@ -19,20 +25,20 @@ const Kwitansi = ({ route }) => {
   const [id, setId] = useState(false);
   const [cekEdit, setCekEdit] = useState(false);
   // set & get data item
-  const { arrData, setKwitansi, removeKwitansi } = useKwitansi();
+  const {arrData, setKwitansi, removeKwitansi} = useKwitansi();
 
   // load data item
   useEffect(() => {
     setKwitansi(transaksi_id);
   }, []);
 
-  const handleEdit = (item) => {
+  const handleEdit = item => {
     setOpen(true);
     setDataEdit(item);
   };
 
   // ketika tombol ditekan
-  const handleHapus = (id) => {
+  const handleHapus = id => {
     setShowDia(true);
     setId(id);
   };
@@ -40,13 +46,13 @@ const Kwitansi = ({ route }) => {
   // menghapus data
   const deleteData = () => {
     removeKwitansi(id);
-    setPesanSuccess("Data Berhasil Dihapus");
+    setPesanSuccess('Data Berhasil Dihapus');
   };
 
   // show toast
-  const setPesanSuccess = (pesan) => {
+  const setPesanSuccess = pesan => {
     Toast.show({
-      type: "success",
+      type: 'success',
       text1: `${pesan} 👋`,
     });
   };
@@ -55,6 +61,7 @@ const Kwitansi = ({ route }) => {
     <SafeAreaView>
       <HeaderComp nama="Kwitansi" setOpen={setOpen} setCekEdit={setCekEdit} />
       <View>
+        <ListData arrData={arrData} handleHapus={handleHapus} />
         {open && (
           <Form
             open={open}
@@ -68,12 +75,10 @@ const Kwitansi = ({ route }) => {
           <DeleteDia
             visible={showDia}
             setVisible={setShowDia}
-            deleteData={deleteData}
-          >
+            deleteData={deleteData}>
             Data yang dihapus tidak bisa dikembalikan
           </DeleteDia>
         )}
-        <ListData arrData={arrData} handleHapus={handleHapus} />
       </View>
       <Toast topOffset={0} />
     </SafeAreaView>
