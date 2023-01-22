@@ -25,6 +25,7 @@ import PerbulanBukuKas from '../screens/bendahara/laporan/buku-kas/Perbulan';
 import PertahunKantin from '../screens/bendahara/laporan/kantin/Pertahun';
 import PersemesterKantin from '../screens/bendahara/laporan/kantin/Persemester';
 import PerbulanKantin from '../screens/bendahara/laporan/kantin/Perbulan';
+import TapNavStaf from './TapNavStaf';
 
 const Stack = createNativeStackNavigator();
 
@@ -147,6 +148,18 @@ const StackNav = () => {
       </>
     );
   };
+  //   jika role pimpinan
+  const roleStaf = () => {
+    return (
+      <>
+        <Stack.Screen
+          name="DashboardStaf"
+          options={{headerShown: false}}
+          component={TapNavStaf}
+        />
+      </>
+    );
+  };
 
   return (
     <NavigationContainer>
@@ -160,6 +173,8 @@ const StackNav = () => {
         {roleBendahara()}
         {/* if already login role ketua */}
         {rolePimpinan()}
+        {/* if already login role Staf */}
+        {roleStaf()}
       </Stack.Navigator>
     </NavigationContainer>
   );

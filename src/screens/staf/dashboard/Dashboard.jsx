@@ -12,7 +12,6 @@ import {
   View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import MenuHome from '../../../components/bendahara/MenuHome';
 import logo from '../../../assets/images/logo.png';
 import colors from '../../../styles/colors';
 import useSaldo from '../../../stores/saldo';
@@ -27,7 +26,7 @@ const Dashboard = ({navigation}) => {
     useSaldo();
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      setSaldo();
+      setSaldo('kantin');
     });
 
     // Return the function to unsubscribe from the event so it gets removed on unmount
@@ -63,13 +62,7 @@ const Dashboard = ({navigation}) => {
 
   return (
     <SafeAreaView>
-      {console.log('data array', pengeluaranTerakhir)}
       <ScrollView>
-        {/* menu */}
-        <View style={{marginTop: 20}}>
-          <MenuHome />
-        </View>
-        {/* logo */}
         <Image
           source={logo}
           style={{
@@ -131,7 +124,7 @@ const Dashboard = ({navigation}) => {
                   color: colors.dark,
                   marginBottom: -10,
                 }}>
-                {pemasukanTerakhir?.item?.nama}
+                {pemasukanTerakhir?.ket}
               </Text>
               <Text
                 style={{
@@ -173,7 +166,7 @@ const Dashboard = ({navigation}) => {
                   marginBottom: -10,
                 }}>
                 {/* pengeluaranTerakhir */}
-                {pengeluaranTerakhir?.item?.nama}
+                {pengeluaranTerakhir?.ket}
               </Text>
               <Text
                 style={{

@@ -3,7 +3,9 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Dashboard from '../screens/bendahara/dashboard/Dashboard';
+
+import Dashboard from './../screens/staf/dashboard/Dashboard';
+
 import Items from '../screens/bendahara/items/Items';
 import Akun from '../screens/bendahara/akun/Akun';
 
@@ -15,9 +17,9 @@ import myColors from '../styles/colors';
 import NotificationContext from '../tools/NotificationContext';
 import Kantin from '../screens/bendahara/kantin/Kantin';
 
-const BendaharaTab = createBottomTabNavigator();
+const StafTab = createBottomTabNavigator();
 
-const TapNavBendahara = () => {
+const TapNavStaf = () => {
   const [tapOpen, setTapOpen] = useState(0);
   const openItem = () => {
     setTapOpen(tapOpen + 1);
@@ -25,7 +27,7 @@ const TapNavBendahara = () => {
   };
   return (
     <NotificationContext.Provider value={tapOpen}>
-      <BendaharaTab.Navigator
+      <StafTab.Navigator
         initialRouteName="Bendahara"
         screenOptions={{
           tabBarActiveTintColor: myColors.pink,
@@ -33,7 +35,7 @@ const TapNavBendahara = () => {
           tabBarStyle: {backgroundColor: myColors.primary},
           tabBarHideOnKeyboard: true,
         }}>
-        <BendaharaTab.Screen
+        <StafTab.Screen
           name="Home"
           component={Dashboard}
           options={{
@@ -51,37 +53,25 @@ const TapNavBendahara = () => {
             ),
           }}
         />
-        <BendaharaTab.Screen
-          name="Unit"
-          component={Items}
+        <StafTab.Screen
+          name="Kantin"
+          component={Kantin}
           options={{
             headerTitleAlign: 'center',
             headerTitleStyle: {fontSize: 16, fontFamily: 'Poppins-Medium'},
             headerTintColor: '#fff',
             headerStyle: {backgroundColor: myColors.primary},
-            tabBarLabel: 'Unit',
+            tabBarLabel: 'Kantin',
             tabBarIcon: ({focused, color, size}) => (
               <Icon
-                name="pushpino"
+                name="creditcard"
                 size={24}
                 color={focused ? myColors.pink : myColors.yellow}
               />
             ),
-            headerRight: () => (
-              <TouchableOpacity onPress={openItem}>
-                <Icon
-                  name="pluscircleo"
-                  size={24}
-                  color="#fff"
-                  style={{
-                    marginEnd: 20,
-                  }}
-                />
-              </TouchableOpacity>
-            ),
           }}
         />
-        <BendaharaTab.Screen
+        <StafTab.Screen
           name="Akun"
           component={Akun}
           options={{
@@ -99,11 +89,11 @@ const TapNavBendahara = () => {
             ),
           }}
         />
-      </BendaharaTab.Navigator>
+      </StafTab.Navigator>
     </NotificationContext.Provider>
   );
 };
 
-export default TapNavBendahara;
+export default TapNavStaf;
 
 const styles = StyleSheet.create({});

@@ -62,7 +62,7 @@ const Form = ({open, setOpen, nameForm}) => {
       // return setShowPeringatan(true);
       request(PERMISSIONS.ANDROID.CAMERA).then(result => {
         if (result === 'granted') {
-          openCamera();
+          return openCamera();
         }
       });
     }

@@ -33,12 +33,16 @@ const Login = () => {
   const {setLogin, getLogin} = useLogin();
 
   const fetchData = async () => {
+    setLoading(true);
     const cek = await getLogin();
-    if (cek && cek.role === 'bendahara') {
+    if (cek?.role === 'bendahara') {
       navigation.navigate('DashboardBendahara');
     }
-    if (cek && cek.role === 'pimpinan') {
+    if (cek?.role === 'pimpinan') {
       navigation.navigate('DashboardPimpinan');
+    }
+    if (cek?.role === 'staf') {
+      navigation.navigate('DashboardStaf');
     }
     setLoading(false);
   };

@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import useLogin from '../../../stores/login';
 import logo from '../../../assets/images/logo.png';
 
@@ -22,11 +22,16 @@ import {useForm} from 'react-hook-form';
 import ButtonComp from '../../../components/form/ButtonComp';
 import showToast from '../../../services/show-toast';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import LoadingComp from '../../../components/LoadingComp';
 
 const Akun = () => {
   const navigation = useNavigation();
   const {setLogout, getLogin, setGantiPassword} = useLogin();
+  // state
+  const [name, setName] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const handleLogout = async () => {
+    setIsLoading(true);
     const cek = await setLogout();
     if (cek) {
       navigation.navigate('Login');
@@ -67,6 +72,19 @@ const Akun = () => {
     showToast(ganti.data);
   };
 
+  const cekDtLogin = async () => {
+    const cek = await getLogin();
+    setName(cek?.name);
+  };
+
+  useEffect(() => {
+    cekDtLogin();
+
+    return () => {
+      cekDtLogin();
+    };
+  }, []);
+
   return (
     <SafeAreaView className="h-full">
       <View className="z-50">
@@ -86,7 +104,7 @@ const Akun = () => {
                   fontSize: 20,
                   textAlign: 'center',
                 }}>
-                Bendahara
+                {name}
               </Text>
               <Text
                 style={{
@@ -155,26 +173,29 @@ const Akun = () => {
               </View>
             </View>
             <View className="w-full">
-              <TouchableOpacity onPress={handleLogout}>
-                <View
-                  className="mx-auto w-full"
-                  style={{
-                    borderWidth: 1,
-                    borderColor: colors.pink,
-                    borderRadius: 10,
-                    paddingHorizontal: 20,
-                    paddingVertical: 5,
-                  }}>
-                  <Text
+              {isLoading && <LoadingComp />}
+              {!isLoading && (
+                <TouchableOpacity onPress={handleLogout}>
+                  <View
+                    className="mx-auto w-full"
                     style={{
-                      color: colors.dark,
-                      fontFamily: 'Poppins-SemiBold',
-                      textAlign: 'center',
+                      borderWidth: 1,
+                      borderColor: colors.pink,
+                      borderRadius: 10,
+                      paddingHorizontal: 20,
+                      paddingVertical: 5,
                     }}>
-                    Logout
-                  </Text>
-                </View>
-              </TouchableOpacity>
+                    <Text
+                      style={{
+                        color: colors.dark,
+                        fontFamily: 'Poppins-SemiBold',
+                        textAlign: 'center',
+                      }}>
+                      Logout
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </ScrollView>
