@@ -14,16 +14,17 @@ import {
 import React, {useEffect, useState} from 'react';
 import logo from '../../../assets/images/logo.png';
 import colors from '../../../styles/colors';
-import useSaldo from '../../../stores/saldo';
 import showRupiah from '../../../services/rupiah';
+import useSaldo from '../../../stores/api/saldo';
 
 const winWidth = Dimensions.get('window').width;
 const winHeight = Dimensions.get('window').height;
 
 const Dashboard = ({navigation}) => {
   // get data
-  const {arrData, setSaldo, pemasukanTerakhir, pengeluaranTerakhir} =
+  const {setSaldo, dtSaldo, pemasukanTerakhir, pengeluaranTerakhir} =
     useSaldo();
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       setSaldo('kantin');
@@ -93,7 +94,7 @@ const Dashboard = ({navigation}) => {
                 fontSize: 14,
                 color: colors.pink,
               }}>
-              {arrData.saldo && showRupiah(arrData.saldo)}
+              {dtSaldo?.saldo && showRupiah(dtSaldo.saldo)}
             </Text>
           </View>
           {/* pemasukan terakhir */}
@@ -133,7 +134,9 @@ const Dashboard = ({navigation}) => {
                   fontSize: 16,
                   color: colors.pink,
                 }}>
-                {showRupiah(parseInt(pemasukanTerakhir?.jumlah))}
+                {pemasukanTerakhir?.jumlah
+                  ? showRupiah(parseInt(pemasukanTerakhir?.jumlah))
+                  : 0}
               </Text>
             </View>
           </View>
@@ -175,7 +178,9 @@ const Dashboard = ({navigation}) => {
                   fontSize: 16,
                   color: colors.pink,
                 }}>
-                {showRupiah(parseInt(pengeluaranTerakhir?.jumlah))}
+                {pengeluaranTerakhir?.jumlah
+                  ? showRupiah(parseInt(pengeluaranTerakhir?.jumlah))
+                  : 0}
               </Text>
             </View>
           </View>

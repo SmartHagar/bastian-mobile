@@ -11,16 +11,60 @@ const useSaldo = create(
     responses: {},
     dtSaldo: [],
     transaksi: [],
-    setSaldo: async () => {
+    pemasukanTerakhir: [],
+    pengeluaranTerakhir: [],
+    setSaldo: async (kantin = 0) => {
       //   const getToken = JSON.parse(localStorage.getItem("token"));
       try {
         const res = await api({
           method: "get",
           url: `/buku-kas/saldo`,
+          params: {
+            kantin,
+          },
           //   headers: { Authorization: `Bearer ${getToken}` },
         });
+        const { data } = res;
+        let filter_pemasukan_terakhir = "";
+        let filter_pengeluaran_terakhir = "";
+        if (kantin) {
+          // filter pemasukan dengan kantin
+          const { pemasukan_terakhir } = data;
+          const filterPemasukan = pemasukan_terakhir.filter(function (row) {
+            return row.item.nama.toLowerCase().includes("kantin");
+          });
+          filter_pemasukan_terakhir = filterPemasukan[0];
+          // filter pengeluaran dengan kantin
+          const { pengeluaran_terakhir } = data;
+          const filterPengeluaran = pengeluaran_terakhir.filter(function (row) {
+            return row.item.nama.toLowerCase().includes("kantin");
+          });
+          filter_pengeluaran_terakhir = filterPengeluaran[0];
+        }
+        if (!kantin) {
+          // filter pemasukan tanpa kantin
+          const { pemasukan_terakhir } = data;
+          const filterPemasukan = pemasukan_terakhir.filter(function (row) {
+            return !row.item.nama.toLowerCase().includes("kantin");
+          });
+          filter_pemasukan_terakhir = filterPemasukan[0];
+          // filter pengeluaran tanpa kantin
+          const { pengeluaran_terakhir } = data;
+          const filterPengeluaran = pengeluaran_terakhir.filter(function (row) {
+            return !row.item.nama.toLowerCase().includes("kantin");
+          });
+          filter_pengeluaran_terakhir = filterPengeluaran[0];
+        }
         set((state) => ({ ...state, responses: res }));
         set((state) => ({ ...state, dtSaldo: res.data }));
+        set((state) => ({
+          ...state,
+          pemasukanTerakhir: filter_pemasukan_terakhir,
+        }));
+        set((state) => ({
+          ...state,
+          pengeluaranTerakhir: filter_pengeluaran_terakhir,
+        }));
         return {
           status: "berhasil",
           data: res.data,

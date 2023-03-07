@@ -25,6 +25,7 @@ import PerbulanBukuKas from '../screens/bendahara/laporan/buku-kas/Perbulan';
 import PertahunKantin from '../screens/bendahara/laporan/kantin/Pertahun';
 import PersemesterKantin from '../screens/bendahara/laporan/kantin/Persemester';
 import PerbulanKantin from '../screens/bendahara/laporan/kantin/Perbulan';
+import PerhariKantin from '../screens/bendahara/laporan/kantin/Perhari';
 import TapNavStaf from './TapNavStaf';
 
 const Stack = createNativeStackNavigator();
@@ -132,6 +133,17 @@ const StackNav = () => {
             headerTitle: 'Laporan Kantin Perbulan',
           }}
           component={PerbulanKantin}
+        />
+        <Stack.Screen
+          name="lap-kantin-perhari"
+          options={{
+            headerTitleAlign: 'center',
+            headerTitleStyle: {fontSize: 16, fontFamily: 'Poppins-Medium'},
+            headerTintColor: '#fff',
+            headerStyle: {backgroundColor: myColors.primary},
+            headerTitle: 'Laporan Kantin Perhari',
+          }}
+          component={PerhariKantin}
         />
       </>
     );

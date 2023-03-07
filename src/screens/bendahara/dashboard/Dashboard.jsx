@@ -17,6 +17,7 @@ import logo from '../../../assets/images/logo.png';
 import colors from '../../../styles/colors';
 import useSaldo from '../../../stores/saldo';
 import showRupiah from '../../../services/rupiah';
+import useSaldoKantin from '../../../stores/api/saldo-kantin';
 
 const winWidth = Dimensions.get('window').width;
 const winHeight = Dimensions.get('window').height;
@@ -25,9 +26,18 @@ const Dashboard = ({navigation}) => {
   // get data
   const {arrData, setSaldo, pemasukanTerakhir, pengeluaranTerakhir} =
     useSaldo();
+
+  const {
+    setSaldoKantin,
+    dtSaldoKantin,
+    pemasukanTerakhirKantin,
+    pengeluaranTerakhirKantin,
+  } = useSaldoKantin();
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       setSaldo();
+      setSaldoKantin();
     });
 
     // Return the function to unsubscribe from the event so it gets removed on unmount
@@ -63,7 +73,6 @@ const Dashboard = ({navigation}) => {
 
   return (
     <SafeAreaView>
-      {console.log('data array', pengeluaranTerakhir)}
       <ScrollView>
         {/* menu */}
         <View style={{marginTop: 20}}>
@@ -84,6 +93,15 @@ const Dashboard = ({navigation}) => {
         <View style={styles.containerInfo}>
           {/* saldo terakhir */}
           <View>
+            <Text
+              style={{
+                fontFamily: 'Poppins-Medium',
+                textAlign: 'center',
+                fontSize: 16,
+                color: colors.blue,
+              }}>
+              FST
+            </Text>
             <Text
               style={{
                 fontFamily: 'Poppins-SemiBold',
@@ -183,6 +201,121 @@ const Dashboard = ({navigation}) => {
                   color: colors.pink,
                 }}>
                 {showRupiah(parseInt(pengeluaranTerakhir?.jumlah))}
+              </Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.containerInfo}>
+          {/* saldo terakhir */}
+          <View>
+            <Text
+              style={{
+                fontFamily: 'Poppins-Medium',
+                textAlign: 'center',
+                fontSize: 16,
+                color: colors.blue,
+              }}>
+              Kantin
+            </Text>
+            <Text
+              style={{
+                fontFamily: 'Poppins-SemiBold',
+                textAlign: 'center',
+                fontSize: 18,
+                color: colors.blue,
+              }}>
+              Saldo Terakhir
+            </Text>
+            <Text
+              style={{
+                fontFamily: 'Poppins-MediumItalic',
+                textAlign: 'center',
+                fontSize: 14,
+                color: colors.pink,
+              }}>
+              {dtSaldoKantin.saldo && showRupiah(dtSaldoKantin.saldo)}
+            </Text>
+          </View>
+          {/* pemasukan terakhir */}
+          <View style={{marginTop: 30}}>
+            <Text
+              style={{
+                fontFamily: 'Poppins-SemiBold',
+                textAlign: 'left',
+                fontSize: 16,
+                color: colors.primary,
+              }}>
+              Pemasukan Terakhir
+            </Text>
+            {/* item */}
+            <View
+              style={{
+                borderWidth: 1,
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+                borderRadius: 10,
+                borderColor: '#aec4f0',
+              }}>
+              <Text
+                style={{
+                  fontFamily: 'Poppins-Regular',
+                  textAlign: 'left',
+                  fontSize: 14,
+                  color: colors.dark,
+                  marginBottom: -10,
+                }}>
+                {pemasukanTerakhirKantin?.ket}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: 'Charmonman-Regular',
+                  textAlign: 'left',
+                  fontSize: 16,
+                  color: colors.pink,
+                }}>
+                {showRupiah(parseInt(pemasukanTerakhirKantin?.jumlah))}
+              </Text>
+            </View>
+          </View>
+          {/* pengeluaran terakhir */}
+          <View style={{marginTop: 20}}>
+            <Text
+              style={{
+                fontFamily: 'Poppins-SemiBold',
+                textAlign: 'left',
+                fontSize: 16,
+                color: colors.primary,
+              }}>
+              Pengeluaran Terakhir
+            </Text>
+            {/* item */}
+            <View
+              style={{
+                borderWidth: 1,
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+                borderRadius: 10,
+                borderColor: '#aec4f0',
+              }}>
+              <Text
+                style={{
+                  fontFamily: 'Poppins-Regular',
+                  textAlign: 'left',
+                  fontSize: 14,
+                  color: colors.dark,
+                  marginBottom: -10,
+                }}>
+                {/* pengeluaranTerakhir */}
+                {pengeluaranTerakhirKantin?.ket}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: 'Charmonman-Regular',
+                  textAlign: 'left',
+                  fontSize: 16,
+                  color: colors.pink,
+                }}>
+                {showRupiah(parseInt(pengeluaranTerakhirKantin?.jumlah))}
               </Text>
             </View>
           </View>

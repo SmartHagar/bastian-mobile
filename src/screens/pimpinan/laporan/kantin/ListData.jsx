@@ -12,7 +12,7 @@ const winWidth = Dimensions.get('window').width;
 const winHeight = Dimensions.get('window').height;
 
 const ListData = ({arrData}) => {
-  console.log(arrData);
+  console.log('array data', arrData);
   return (
     <FlatList
       keyExtractor={item => item.id}

@@ -78,6 +78,19 @@ const Kantin = () => {
         <View className="flex-row justify-center space-x-2">
           <TouchableOpacity
             className="h-10"
+            onPress={() => navigation.navigate('lap-kantin-perhari')}>
+            <ImageBackground
+              source={pinkRetangle}
+              resizeMode="stretch"
+              className="h-full justify-center items-center">
+              <Text className="text-[14px] font-[Poppins-SemiBold] text-white px-[5%]">
+                Perhari
+              </Text>
+            </ImageBackground>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className="h-10"
             onPress={() => navigation.navigate('lap-kantin-perbulan')}>
             {/* lap-kantin-pertahun */}
             <ImageBackground
@@ -89,18 +102,7 @@ const Kantin = () => {
               </Text>
             </ImageBackground>
           </TouchableOpacity>
-          <TouchableOpacity
-            className="h-10"
-            onPress={() => navigation.navigate('lap-kantin-persemester')}>
-            <ImageBackground
-              source={pinkRetangle}
-              resizeMode="stretch"
-              className="h-full justify-center items-center">
-              <Text className="text-[14px] font-[Poppins-SemiBold] text-white px-[5%]">
-                Semester
-              </Text>
-            </ImageBackground>
-          </TouchableOpacity>
+
           <TouchableOpacity
             className="h-10"
             onPress={() => navigation.navigate('lap-kantin-pertahun')}>

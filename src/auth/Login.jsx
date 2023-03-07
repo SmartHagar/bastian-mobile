@@ -37,14 +37,19 @@ const Login = () => {
     const cek = await getLogin();
     if (cek?.role === 'bendahara') {
       navigation.navigate('DashboardBendahara');
+      return;
     }
     if (cek?.role === 'pimpinan') {
       navigation.navigate('DashboardPimpinan');
+      return;
     }
     if (cek?.role === 'staf') {
       navigation.navigate('DashboardStaf');
+      return;
     }
-    setLoading(false);
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
   };
 
   useEffect(() => {

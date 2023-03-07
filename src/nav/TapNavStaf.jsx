@@ -16,6 +16,7 @@ import myColors from '../styles/colors';
 // icons
 import NotificationContext from '../tools/NotificationContext';
 import Kantin from '../screens/bendahara/kantin/Kantin';
+import KantinStaf from '../screens/staf/kantin/Kantin';
 
 const StafTab = createBottomTabNavigator();
 
@@ -55,7 +56,7 @@ const TapNavStaf = () => {
         />
         <StafTab.Screen
           name="Kantin"
-          component={Kantin}
+          component={KantinStaf}
           options={{
             headerTitleAlign: 'center',
             headerTitleStyle: {fontSize: 16, fontFamily: 'Poppins-Medium'},
