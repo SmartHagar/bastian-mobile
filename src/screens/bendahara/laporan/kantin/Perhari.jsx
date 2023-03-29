@@ -52,7 +52,7 @@ const Perhari = () => {
   }, [perhari, bulan, tahun]);
 
   //   download file
-  const REMOTE_IMAGE_PATH = `${BASE_URL}/export/pdf/bulan?tanggal=${perhari}&bulan=${bulan}&tahun=${tahun}`;
+  const REMOTE_IMAGE_PATH = `${BASE_URL}/export/pdf/hari?tanggal=${perhari}&bulan=${bulan}&tahun=${tahun}&kantin=kantin`;
   const checkPermission = async () => {
     setIsLoading(true);
     // Function to check the platform
